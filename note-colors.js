@@ -101,7 +101,7 @@ function updateColors() {
         }
 
         // Add color to output.
-        outputColors[noteText[i]] = { "bg": bg, "fg": fg };
+        outputColors[noteText[currIndex]] = { "bg": bg, "fg": fg };
 
     }
     noteSheet.replaceSync(sheetText);
@@ -173,12 +173,13 @@ function updateOutput() {
 
     // CSV body
     var i = 0;
-    for (var row in outputColors) {
-        currNote = outputColors[row];
-        var lastRow = ++i == Object.keys(outputColors).length;
+    var notes = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
+    for (var note of notes) {
+        currNote = outputColors[note];
+        var lastRow = ++i == notes.length;
 
         cells = [];
-        if (outputNames) { cells.push(row.padEnd(2 * pretty, " ")); };
+        if (outputNames) { cells.push(note.padEnd(2 * pretty, " ")); };
         if (outputBg)    { cells.push(currNote["bg"]) };
         if (outputFg)    { cells.push(currNote["fg"]) };
         outText += cells.join(pretty ? ", " : ",");
@@ -186,7 +187,7 @@ function updateOutput() {
         // Handle trailing comma.
         outText += ((trailingComma && !lastRow) ? "," : "");
         // Handle comment, and trailing comma alignment on last row.
-        outText += (comment ? ((trailingComma && lastRow) ? " " : "") + ` //${row}` : "")
+        outText += (comment ? ((trailingComma && lastRow) ? " " : "") + ` //${note}` : "")
         outText += "\n";
     }
     outputBox.innerText = outText;
