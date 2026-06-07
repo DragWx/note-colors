@@ -43,6 +43,11 @@ body {
 #footer a:hover {
     color: var(--foreground-hover);
 }
+#outputBox {
+    font-family: monospace;
+    margin: 0;
+    padding: 0 8px;
+}
 a {
     color: var(--foreground-color-1);
 }
@@ -53,7 +58,8 @@ div {
     vertical-align: middle;
 }
 hr {
-    border: 1px solid var(--foreground-color-1);
+    border: none;
+    border-top: var(--border-width) solid var(--border-color);
 }
 
 fieldset {
@@ -137,74 +143,95 @@ input[type=radio] {
         <div class="note note-B"></div>
         <div class="note note-C"></div>
     </div>
-    <form name="paletteSettings" class="flexRow" style="margin-bottom: 16px;">
-        <fieldset class="flexCol">
-            <legend>Order</legend>
-            <label title="The next hue on the color wheel will be the next semitone in the scale.">
-                <input onClick="updateColors()" type="radio" name="ordering" value="semitones" checked>Semitones</label>
-            <label title="The next hue on the color wheel will be the next fifth on the circle of fifths.">
-                <input onClick="updateColors()" type="radio" name="ordering" value="fifths" >Fifths</label>
-        </fieldset>
-        <fieldset class="flexCol">
-            <legend>Chroma</legend>
-            <label><input onChange="updateColors()" type="number" name="hue" size="5" value="130">Hue</label>
-            <label><input onChange="updateColors()" type="number" name="saturation" size="5" step="0.01" value="0.60">Sat</label>
-            <label title="Step through the color wheel in reverse order. (e.g. red magenta blue instead of red orange yellow)">
-                <input onClick="updateColors()" type="checkbox" name="reverse">Reverse</label>
-            <label title="Hues 0+1, 2+3, 4+5, etc are paired together. (Use even/odd darkening with this)">
-                <input onClick="updateColors()" type="checkbox" name="doubledA" checked>Doubled 1</label>
-            <label title="Hues 1+2, 3+4, 5+6, etc are paired together. (Use even/odd darkening with this)">
-                <input onClick="updateColors()" type="checkbox" name="doubledB">Doubled 2</label>
-        </fieldset>
-        <fieldset class="flexCol">
-            <legend>Luma</legend>
-            <label><input onChange="updateColors()" type="number" name="brightness" size="5" step="0.01" value="0.50">Bri</label>
-            <label><input onChange="updateColors()" type="number" name="contrast" size="5" step="0.01" value="0.50">Con</label>
+    <form name="paletteSettings" class="flexCol" style="margin-bottom: 16px;">
+        <div class="flexRow">
             <fieldset class="flexCol">
-                <legend><label title="Use a sine wave to vary the luminance across the color wheel. One color will be darkest and its complement will be lightest.">
-                    <input onClick="updateColors()" type="checkbox" name="varianceEnabled" checked>Variance</label></legend>
-                <label title="How much to vary luminance across the color wheel.">
-                    <input onChange="updateColors()" type="number" name="varianceAmt" size="5" step="0.01" value="0.10">Amt</label>
-                <label title="Phase offset for varying luminance. 0 = blues darkened, yellows lightened; 90 = cyans darkened, reds lightened, etc.">
-                    <input onChange="updateColors()" type="number" name="varianceDeg" size="5" value="0">Deg</label>
+                <legend>Order</legend>
+                <label title="The next hue on the color wheel will be the next semitone in the scale.">
+                    <input onClick="updateColors()" type="radio" name="ordering" value="semitones" checked>Semitones</label>
+                <label title="The next hue on the color wheel will be the next fifth on the circle of fifths.">
+                    <input onClick="updateColors()" type="radio" name="ordering" value="fifths" >Fifths</label>
             </fieldset>
-        </fieldset>
-        <fieldset class="flexCol">
-            <legend>Darken</legend>
-            <label title="Each odd step on the color wheel is darkened.">
-                <input onClick="updateColors()" type="checkbox" name="darkOdds" checked>Odds</label>
-            <label title="Each even step on the color wheel is darkened.">
-                <input onClick="updateColors()" type="checkbox" name="darkEvens">Evens</label>
-            <label title="Each sharp note on the scale is darkened.">
-                <input onClick="updateColors()" type="checkbox" name="darkSharps">Sharps</label>
-            <label title="Each natural (non-sharp) note on the scale is darkened.">
-                <input onClick="updateColors()" type="checkbox" name="darkNaturals">Naturals</label>
-            <label title="How much to darken when darkening.">
-                <input onChange="updateColors()" type="number" name="darkAmt" size="5" step="0.01" value="0.25">Amt</label>
-        </fieldset>
-        <fieldset class="flexCol">
-            <legend>Display</legend>
-            <label title="Show the note names (e.g., C, F#) in the boxes.">
-                <input onClick="updateColors()" type="checkbox" name="noteNames" checked>Note Names</label>
-            <label title="Color the note boxes. If disabled, the note names will use the BG color instead.">
-                <input onClick="updateColors()" type="checkbox" name="noteBG" checked>Note BG</label>
-            <label title="Switch to grayscale view (for experimenting).">
-                <input onClick="updateColors()" type="checkbox" name="grayscale">Grayscale</label>
-        </fieldset>
-        <fieldset class="flexRow" style="align-items: flex-start;">
-            <legend>Root</legend>
-            <label class="flexCol whtKey" style="align-items: center; padding: 0 4px;"><input onClick="updateColors()" type="radio" name="startAt" value="C" checked>C</label>
-            <label class="flexCol blkKey" style="align-items: center; padding: 0 4px;"><input onClick="updateColors()" type="radio" name="startAt" value="CS">C#</label>
-            <label class="flexCol whtKey" style="align-items: center; padding: 0 4px;"><input onClick="updateColors()" type="radio" name="startAt" value="D">D</label>
-            <label class="flexCol blkKey" style="align-items: center; padding: 0 4px;"><input onClick="updateColors()" type="radio" name="startAt" value="DS">D#</label>
-            <label class="flexCol whtKey" style="align-items: center; padding: 0 4px;"><input onClick="updateColors()" type="radio" name="startAt" value="E">E</label>
-            <label class="flexCol whtKey" style="align-items: center; padding: 0 4px;"><input onClick="updateColors()" type="radio" name="startAt" value="F">F</label>
-            <label class="flexCol blkKey" style="align-items: center; padding: 0 4px;"><input onClick="updateColors()" type="radio" name="startAt" value="FS">F#</label>
-            <label class="flexCol whtKey" style="align-items: center; padding: 0 4px;"><input onClick="updateColors()" type="radio" name="startAt" value="G">G</label>
-            <label class="flexCol blkKey" style="align-items: center; padding: 0 4px;"><input onClick="updateColors()" type="radio" name="startAt" value="GS">G#</label>
-            <label class="flexCol whtKey" style="align-items: center; padding: 0 4px;"><input onClick="updateColors()" type="radio" name="startAt" value="A">A</label>
-            <label class="flexCol blkKey" style="align-items: center; padding: 0 4px;"><input onClick="updateColors()" type="radio" name="startAt" value="AS">A#</label>
-            <label class="flexCol whtKey" style="align-items: center; padding: 0 4px;"><input onClick="updateColors()" type="radio" name="startAt" value="B">B</label>
+            <fieldset class="flexCol">
+                <legend>Chroma</legend>
+                <label><input onChange="updateColors()" type="number" name="hue" size="5" value="130">Hue</label>
+                <label><input onChange="updateColors()" type="number" name="saturation" size="5" step="0.01" value="0.60">Sat</label>
+                <label title="Step through the color wheel in reverse order. (e.g. red magenta blue instead of red orange yellow)">
+                    <input onClick="updateColors()" type="checkbox" name="reverse">Reverse</label>
+                <label title="Hues 0+1, 2+3, 4+5, etc are paired together. (Use even/odd darkening with this)">
+                    <input onClick="updateColors()" type="checkbox" name="doubledA" checked>Doubled 1</label>
+                <label title="Hues 1+2, 3+4, 5+6, etc are paired together. (Use even/odd darkening with this)">
+                    <input onClick="updateColors()" type="checkbox" name="doubledB">Doubled 2</label>
+            </fieldset>
+            <fieldset class="flexCol">
+                <legend>Luma</legend>
+                <label><input onChange="updateColors()" type="number" name="brightness" size="5" step="0.01" value="0.50">Bri</label>
+                <label><input onChange="updateColors()" type="number" name="contrast" size="5" step="0.01" value="0.50">Con</label>
+                <fieldset class="flexCol">
+                    <legend><label title="Use a sine wave to vary the luminance across the color wheel. One color will be darkest and its complement will be lightest.">
+                        <input onClick="updateColors()" type="checkbox" name="varianceEnabled" checked>Variance</label></legend>
+                    <label title="How much to vary luminance across the color wheel.">
+                        <input onChange="updateColors()" type="number" name="varianceAmt" size="5" step="0.01" value="0.10">Amt</label>
+                    <label title="Phase offset for varying luminance. 0 = blues darkened, yellows lightened; 90 = cyans darkened, reds lightened, etc.">
+                        <input onChange="updateColors()" type="number" name="varianceDeg" size="5" value="0">Deg</label>
+                </fieldset>
+            </fieldset>
+            <fieldset class="flexCol">
+                <legend>Darken</legend>
+                <label title="Each odd step on the color wheel is darkened.">
+                    <input onClick="updateColors()" type="checkbox" name="darkOdds" checked>Odds</label>
+                <label title="Each even step on the color wheel is darkened.">
+                    <input onClick="updateColors()" type="checkbox" name="darkEvens">Evens</label>
+                <label title="Each sharp note on the scale is darkened.">
+                    <input onClick="updateColors()" type="checkbox" name="darkSharps">Sharps</label>
+                <label title="Each natural (non-sharp) note on the scale is darkened.">
+                    <input onClick="updateColors()" type="checkbox" name="darkNaturals">Naturals</label>
+                <label title="How much to darken when darkening.">
+                    <input onChange="updateColors()" type="number" name="darkAmt" size="5" step="0.01" value="0.25">Amt</label>
+            </fieldset>
+            <fieldset class="flexCol">
+                <legend>Display</legend>
+                <label title="Show the note names (e.g., C, F#) in the boxes.">
+                    <input onClick="updateColors()" type="checkbox" name="noteNames" checked>Note Names</label>
+                <label title="Color the note boxes. If disabled, the note names will use the BG color instead.">
+                    <input onClick="updateColors()" type="checkbox" name="noteBG" checked>Note BG</label>
+                <label title="Switch to grayscale view (for experimenting).">
+                    <input onClick="updateColors()" type="checkbox" name="grayscale">Grayscale</label>
+            </fieldset>
+            <fieldset class="flexRow" style="align-items: flex-start;">
+                <legend>Root</legend>
+                <label class="flexCol whtKey" style="align-items: center; padding: 0 4px;"><input onClick="updateColors()" type="radio" name="startAt" value="C" checked>C</label>
+                <label class="flexCol blkKey" style="align-items: center; padding: 0 4px;"><input onClick="updateColors()" type="radio" name="startAt" value="CS">C#</label>
+                <label class="flexCol whtKey" style="align-items: center; padding: 0 4px;"><input onClick="updateColors()" type="radio" name="startAt" value="D">D</label>
+                <label class="flexCol blkKey" style="align-items: center; padding: 0 4px;"><input onClick="updateColors()" type="radio" name="startAt" value="DS">D#</label>
+                <label class="flexCol whtKey" style="align-items: center; padding: 0 4px;"><input onClick="updateColors()" type="radio" name="startAt" value="E">E</label>
+                <label class="flexCol whtKey" style="align-items: center; padding: 0 4px;"><input onClick="updateColors()" type="radio" name="startAt" value="F">F</label>
+                <label class="flexCol blkKey" style="align-items: center; padding: 0 4px;"><input onClick="updateColors()" type="radio" name="startAt" value="FS">F#</label>
+                <label class="flexCol whtKey" style="align-items: center; padding: 0 4px;"><input onClick="updateColors()" type="radio" name="startAt" value="G">G</label>
+                <label class="flexCol blkKey" style="align-items: center; padding: 0 4px;"><input onClick="updateColors()" type="radio" name="startAt" value="GS">G#</label>
+                <label class="flexCol whtKey" style="align-items: center; padding: 0 4px;"><input onClick="updateColors()" type="radio" name="startAt" value="A">A</label>
+                <label class="flexCol blkKey" style="align-items: center; padding: 0 4px;"><input onClick="updateColors()" type="radio" name="startAt" value="AS">A#</label>
+                <label class="flexCol whtKey" style="align-items: center; padding: 0 4px;"><input onClick="updateColors()" type="radio" name="startAt" value="B">B</label>
+            </fieldset>
+        </div>
+        <fieldset style="align-self: flex-start">
+            <legend><label>
+                <input onClick="toggleOutputBox()" type="checkbox" name="outputBoxVisible">Output</label></legend>
+            </label></legend>
+            <div id="outputContainer" class="flexRow" style="gap: 8px;">
+                <div class="flexCol">
+                    <fieldset class="flexCol">
+                        <legend>Fields</legend>
+                        <label><input onClick="updateOutput()" type="checkbox" name="outputNames" checked>Note</label>
+                        <label><input onClick="updateOutput()" type="checkbox" name="outputBg" checked>BG</label>
+                        <label><input onClick="updateOutput()" type="checkbox" name="outputFg" checked>FG</label>
+                    </fieldset>
+                    <label><input onClick="updateOutput()" type="checkbox" name="outputPretty" checked>Pretty</label>
+                    <label><input onClick="updateOutput()" type="checkbox" name="outputTrailingComma">Trailing ','</label>
+                    <label><input onClick="updateOutput()" type="checkbox" name="outputComment">Comment</label>
+                </div>
+                <pre id="outputBox"></pre>
+            </div>
         </fieldset>
     </form>
     <div class="flexRow">

@@ -3,17 +3,36 @@
 window.onload = init;
 
 var noteSheet = new CSSStyleSheet();
+var outputColors = {};
+var outputBox;
 
 function init() {
+    outputBox = document.getElementById("outputBox");
+
+    toggleOutputBox();
     updateColors();
+    
     document.adoptedStyleSheets.push(noteSheet);
+}
+
+function toggleOutputBox() {
+    var settings = document.forms["paletteSettings"];
+    var outputBoxVisible = settings["outputBoxVisible"].checked;
+    var outputContainer = document.getElementById("outputContainer");
+    if (outputBoxVisible) {
+        outputContainer.style.display = "";
+    } else {
+        outputContainer.style.display = "none";
+    }
 }
 
 function updateColors() {
     var noteNames = ["C", "CS", "D", "DS", "E", "F", "FS", "G", "GS", "A", "AS", "B"];
     var noteSharps = [false, true, false, true, false, false, true, false, true, false, true, false];
     var noteText = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
-    
+    outputColors = {};
+
+
     // Grab all of the settings from the control panel.
     var settings = document.forms["paletteSettings"];
     var order;  // Which note gets which color number.
@@ -80,8 +99,13 @@ function updateColors() {
             // Add note name to notes.
             sheetText += `.note-${noteNames[i]}::after { content: "${ noteText[currIndex] }"; font-weight: bold; }\n`;
         }
+
+        // Add color to output.
+        outputColors[noteText[i]] = { "bg": bg, "fg": fg };
+
     }
     noteSheet.replaceSync(sheetText);
+    updateOutput();
 }
 
 function yuv2rgb(y, u, v, grayscale = false, gamutCorrect = false) {
@@ -127,4 +151,35 @@ function removeGamma(v) {
     } else {
         return (1.055 * Math.pow(v, 1/2.4)) - 0.055;
     }
+}
+
+function updateOutput() {
+    var settings = document.forms["paletteSettings"];
+    var pretty = settings["outputPretty"].checked ? 1 : 0;
+    var trailingComma = settings["outputTrailingComma"].checked;
+    var comment = settings["outputComment"].checked;
+    var outputNames = settings["outputNames"].checked;
+    var outputBg = settings["outputBg"].checked;
+    var outputFg = settings["outputFg"].checked;
+    var outText = "";
+    var cells = [];
+    if (outputNames) { cells.push("note"); };
+    if (outputBg)    { cells.push("bg"); };
+    if (outputFg)    { cells.push("fg"); };
+    outText += cells.join(pretty ? ", " : ",") + (trailingComma ? "," : "") + "\n";
+    var i = 0;
+    for (var row in outputColors) {
+        currNote = outputColors[row];
+        var lastRow = ++i == Object.keys(outputColors).length;
+
+        cells = [];
+        if (outputNames) { cells.push(row.padEnd(2 * pretty, " ")); };
+        if (outputBg)    { cells.push(currNote["bg"]) };
+        if (outputFg)    { cells.push(currNote["fg"]) };
+        outText += cells.join(pretty ? ", " : ",");
+        outText += ((trailingComma && !lastRow) ? "," : "");
+        outText += (comment ? ((trailingComma && lastRow) ? " " : "") + ` //${row}` : "")
+        outText += "\n";
+    }
+    outputBox.innerText = outText;
 }
