@@ -161,12 +161,17 @@ function updateOutput() {
     var outputNames = settings["outputNames"].checked;
     var outputBg = settings["outputBg"].checked;
     var outputFg = settings["outputFg"].checked;
+
     var outText = "";
     var cells = [];
+    
+    // CSV header
     if (outputNames) { cells.push("note"); };
     if (outputBg)    { cells.push("bg"); };
     if (outputFg)    { cells.push("fg"); };
     outText += cells.join(pretty ? ", " : ",") + (trailingComma ? "," : "") + "\n";
+
+    // CSV body
     var i = 0;
     for (var row in outputColors) {
         currNote = outputColors[row];
@@ -177,9 +182,46 @@ function updateOutput() {
         if (outputBg)    { cells.push(currNote["bg"]) };
         if (outputFg)    { cells.push(currNote["fg"]) };
         outText += cells.join(pretty ? ", " : ",");
+        
+        // Handle trailing comma.
         outText += ((trailingComma && !lastRow) ? "," : "");
+        // Handle comment, and trailing comma alignment on last row.
         outText += (comment ? ((trailingComma && lastRow) ? " " : "") + ` //${row}` : "")
         outText += "\n";
     }
     outputBox.innerText = outText;
+}
+
+function setOutputPreset(inPreset) {
+    var settings = document.forms["paletteSettings"];
+
+    switch (inPreset) {
+    case "csv":
+        settings["outputNames"].checked = true;
+        settings["outputBg"].checked = true;
+        settings["outputFg"].checked = true;
+        settings["outputPretty"].checked = false;
+        settings["outputTrailingComma"].checked = false;
+        settings["outputComment"].checked = false;
+        break;
+    case "bgArray":
+    case "fgArray":
+        settings["outputNames"].checked = false;
+        settings["outputBg"].checked = inPreset == "bgArray";
+        settings["outputFg"].checked = inPreset == "fgArray";
+        settings["outputPretty"].checked = true;
+        settings["outputTrailingComma"].checked = true;
+        settings["outputComment"].checked = true;
+        break;
+    default:
+        settings["outputNames"].checked = true;
+        settings["outputBg"].checked = true;
+        settings["outputFg"].checked = true;
+        settings["outputPretty"].checked = true;
+        settings["outputTrailingComma"].checked = false;
+        settings["outputComment"].checked = false;
+        break;
+    }
+
+    updateOutput();
 }

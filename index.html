@@ -10,6 +10,10 @@
     --background-hover: #282828;
     --background-hover-2: #383838;
 
+    --button-color: #888;
+    --button-color-disabled: #555;
+    --button-foreground: #000;
+
     --foreground-color-1: #AAA;
     --foreground-hover: #FFF;
 
@@ -88,6 +92,43 @@ input:focus {
 }
 input:hover {
     border-color: var(--foreground-color-1);
+}
+
+button,
+input[type=button] {
+    cursor: pointer;
+    background: var(--button-color);
+    padding: 2px 8px;
+    border: 1px outset var(--button-color);
+    color: var(--button-foreground);
+    border-radius: 2px;
+}
+button:focus,
+input[type=button]:focus {
+    background: var(--foreground-color-1);
+    border-color: var(--foreground-hover);
+    border-style: solid;
+}
+button:not(:disabled):hover,
+input[type=button]:not(:disabled):hover {
+    border-style: solid;
+    border-color: var(--foreground-hover);
+}
+button:not(:disabled):active,
+input[type=button]:not(:disabled):active {
+    border-style: inset;
+    background: var(--foreground-hover);
+    padding-top: 4px;
+    padding-left: 10px;
+    padding-right: 6px;
+    padding-bottom: 0px;
+}
+button:disabled,
+input[type=button]:disabled {
+    cursor: default;
+    border-style: solid;
+    border-color: var(--button-color-disabled);
+    background: var(--button-color-disabled);
 }
 
 input[type=radio] {
@@ -222,13 +263,31 @@ input[type=radio] {
                 <div class="flexCol">
                     <fieldset class="flexCol">
                         <legend>Fields</legend>
-                        <label><input onClick="updateOutput()" type="checkbox" name="outputNames" checked>Note</label>
-                        <label><input onClick="updateOutput()" type="checkbox" name="outputBg" checked>BG</label>
-                        <label><input onClick="updateOutput()" type="checkbox" name="outputFg" checked>FG</label>
+                        <label title="Include note name (e.g., C, C#, D, D#, etc) in output.">
+                            <input onClick="updateOutput()" type="checkbox" name="outputNames" checked>Note</label>
+                        <label title="Include background (main) color in output.">
+                            <input onClick="updateOutput()" type="checkbox" name="outputBg" checked>BG</label>
+                        <label title="Include foreground (text) color in output.">
+                            <input onClick="updateOutput()" type="checkbox" name="outputFg" checked>FG</label>
                     </fieldset>
-                    <label><input onClick="updateOutput()" type="checkbox" name="outputPretty" checked>Pretty</label>
-                    <label><input onClick="updateOutput()" type="checkbox" name="outputTrailingComma">Trailing ','</label>
-                    <label><input onClick="updateOutput()" type="checkbox" name="outputComment">Comment</label>
+                    <fieldSet class="flexCol">
+                        <legend>Formatting</legend>                        
+                        <label title="Add spaces to make everything neat.">
+                            <input onClick="updateOutput()" type="checkbox" name="outputPretty" checked>Pretty</label>
+                        <label title="Add a trailing comma to each row (except the last row).">
+                            <input onClick="updateOutput()" type="checkbox" name="outputTrailingComma">Trailing ','</label>
+                        <label title="Add note name (e.g., C, C#, D, D#, etc) to the end of the row as a comment.">
+                            <input onClick="updateOutput()" type="checkbox" name="outputComment">Comment</label>
+                    </fieldSet>
+                </div>
+                <div class="flexCol">
+                    <fieldSet class="flexCol">
+                        <legend>Presets</legend>
+                        <input onClick="setOutputPreset('default')" type="button" name="outputPresetDefault" value="Default">
+                        <input onClick="setOutputPreset('csv')" type="button" name="outputPresetCsv" value="CSV">
+                        <input onClick="setOutputPreset('bgArray')" type="button" name="outputPresetBgArray" value="BG Array">
+                        <input onClick="setOutputPreset('fgArray')" type="button" name="outputPresetBgArray" value="FG Array">
+                    </fieldSet>
                 </div>
                 <pre id="outputBox"></pre>
             </div>
