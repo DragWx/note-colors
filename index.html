@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Note Colors</title>
+<style type="text/css">
+:root {
+    --background-color-1: #181818;
+    --background-color-2: #080808;
+    --background-hover: #282828;
+    --background-hover-2: #383838;
+
+    --foreground-color-1: #AAA;
+    --foreground-hover: #FFF;
+
+    --border-color: #555;
+    --border-width: 1px;
+}
+body {
+    color-scheme: dark;
+    background: var(--background-color-1);
+    color: var(--foreground-color-1);
+    font-family: sans-serif;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+}
+#app {
+    flex: 100%;
+}
+#footer {
+    display: flex;
+    flex-direction: row;
+    padding: 8px;
+    background: var(--background-color-2);
+    color: var(--foreground-color-1);
+}
+#footer a {
+    color: #888;
+}
+#footer a:hover {
+    color: var(--foreground-hover);
+}
+a {
+    color: var(--foreground-color-1);
+}
+a:hover {
+    color: var(--foreground-hover);
+}
+div {
+    vertical-align: middle;
+}
+hr {
+    border: 1px solid var(--foreground-color-1);
+}
+
+fieldset {
+    border: var(--border-width) solid var(--border-color);
+    display: inline-block;
+    vertical-align: top;
+}
+fieldset legend {
+    padding: 4px 8px;
+}
+
+label {
+    cursor: pointer;
+    user-select: none;
+}
+label:hover {
+    color: var(--foreground-hover);
+}
+input {
+    background: var(--background-color-2);
+    border: 1px solid var(--border-color);
+    color: var(--foreground-color-1);
+}
+input:focus {
+    border-color: var(--foreground-color-1);
+}
+input:hover {
+    border-color: var(--foreground-color-1);
+}
+
+input[type=radio] {
+    cursor: pointer;
+}
+.flexRow {
+    display: flex;
+    flex-direction: row;
+}
+.flexCol {
+    display: flex;
+    flex-direction: column;
+}
+.note {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 20px;
+    text-align: center;
+}
+.note:first-of-type {
+    border-radius: 16px 0 0 16px;
+}
+.note:last-of-type {
+    border-radius: 0 16px 16px 0;
+}
+.whtKey {
+    background: var(--background-hover);
+}
+.blkKey {
+    background: var(--background-color-1);
+}
+</style>
+<script type="text/javascript" src="note-colors.js"></script>
+</head>
+<body>
+<noscript><h2>If you don't enable Javascript, I swear I'm going to scream.</h2></noscript>
+<div id="app" class="flexCol">
+    <div class="flexRow">
+        <div class="note note-C"></div>
+        <div class="note note-CS"></div>
+        <div class="note note-D"></div>
+        <div class="note note-DS"></div>
+        <div class="note note-E"></div>
+        <div class="note note-F"></div>
+        <div class="note note-FS"></div>
+        <div class="note note-G"></div>
+        <div class="note note-GS"></div>
+        <div class="note note-A"></div>
+        <div class="note note-AS"></div>
+        <div class="note note-B"></div>
+        <div class="note note-C"></div>
+    </div>
+    <form name="paletteSettings" class="flexRow" style="margin-bottom: 16px;">
+        <fieldset class="flexCol">
+            <legend>Order</legend>
+            <label title="The next hue on the color wheel will be the next semitone in the scale.">
+                <input onClick="updateColors()" type="radio" name="ordering" value="semitones" checked>Semitones</label>
+            <label title="The next hue on the color wheel will be the next fifth on the circle of fifths.">
+                <input onClick="updateColors()" type="radio" name="ordering" value="fifths" >Fifths</label>
+        </fieldset>
+        <fieldset class="flexCol">
+            <legend>Chroma</legend>
+            <label><input onChange="updateColors()" type="number" name="hue" size="5" value="130">Hue</label>
+            <label><input onChange="updateColors()" type="number" name="saturation" size="5" step="0.01" value="0.60">Sat</label>
+            <label title="Step through the color wheel in reverse order. (e.g. red magenta blue instead of red orange yellow)">
+                <input onClick="updateColors()" type="checkbox" name="reverse">Reverse</label>
+            <label title="Hues 0+1, 2+3, 4+5, etc are paired together. (Use even/odd darkening with this)">
+                <input onClick="updateColors()" type="checkbox" name="doubledA" checked>Doubled 1</label>
+            <label title="Hues 1+2, 3+4, 5+6, etc are paired together. (Use even/odd darkening with this)">
+                <input onClick="updateColors()" type="checkbox" name="doubledB">Doubled 2</label>
+        </fieldset>
+        <fieldset class="flexCol">
+            <legend>Luma</legend>
+            <label><input onChange="updateColors()" type="number" name="brightness" size="5" step="0.01" value="0.50">Bri</label>
+            <label><input onChange="updateColors()" type="number" name="contrast" size="5" step="0.01" value="0.50">Con</label>
+            <fieldset class="flexCol">
+                <legend><label title="Use a sine wave to vary the luminance across the color wheel. One color will be darkest and its complement will be lightest.">
+                    <input onClick="updateColors()" type="checkbox" name="varianceEnabled" checked>Variance</label></legend>
+                <label title="How much to vary luminance across the color wheel.">
+                    <input onChange="updateColors()" type="number" name="varianceAmt" size="5" step="0.01" value="0.10">Amt</label>
+                <label title="Phase offset for varying luminance. 0 = blues darkened, yellows lightened; 90 = cyans darkened, reds lightened, etc.">
+                    <input onChange="updateColors()" type="number" name="varianceDeg" size="5" value="0">Deg</label>
+            </fieldset>
+        </fieldset>
+        <fieldset class="flexCol">
+            <legend>Darken</legend>
+            <label title="Each odd step on the color wheel is darkened.">
+                <input onClick="updateColors()" type="checkbox" name="darkOdds" checked>Odds</label>
+            <label title="Each even step on the color wheel is darkened.">
+                <input onClick="updateColors()" type="checkbox" name="darkEvens">Evens</label>
+            <label title="Each sharp note on the scale is darkened.">
+                <input onClick="updateColors()" type="checkbox" name="darkSharps">Sharps</label>
+            <label title="Each natural (non-sharp) note on the scale is darkened.">
+                <input onClick="updateColors()" type="checkbox" name="darkNaturals">Naturals</label>
+            <label title="How much to darken when darkening.">
+                <input onChange="updateColors()" type="number" name="darkAmt" size="5" step="0.01" value="0.25">Amt</label>
+        </fieldset>
+        <fieldset class="flexCol">
+            <legend>Display</legend>
+            <label title="Show the note names (e.g., C, F#) in the boxes.">
+                <input onClick="updateColors()" type="checkbox" name="noteNames" checked>Note Names</label>
+            <label title="Color the note boxes. If disabled, the note names will use the BG color instead.">
+                <input onClick="updateColors()" type="checkbox" name="noteBG" checked>Note BG</label>
+            <label title="Switch to grayscale view (for experimenting).">
+                <input onClick="updateColors()" type="checkbox" name="grayscale">Grayscale</label>
+        </fieldset>
+        <fieldset class="flexRow" style="align-items: flex-start;">
+            <legend>Root</legend>
+            <label class="flexCol whtKey" style="align-items: center; padding: 0 4px;"><input onClick="updateColors()" type="radio" name="startAt" value="C" checked>C</label>
+            <label class="flexCol blkKey" style="align-items: center; padding: 0 4px;"><input onClick="updateColors()" type="radio" name="startAt" value="CS">C#</label>
+            <label class="flexCol whtKey" style="align-items: center; padding: 0 4px;"><input onClick="updateColors()" type="radio" name="startAt" value="D">D</label>
+            <label class="flexCol blkKey" style="align-items: center; padding: 0 4px;"><input onClick="updateColors()" type="radio" name="startAt" value="DS">D#</label>
+            <label class="flexCol whtKey" style="align-items: center; padding: 0 4px;"><input onClick="updateColors()" type="radio" name="startAt" value="E">E</label>
+            <label class="flexCol whtKey" style="align-items: center; padding: 0 4px;"><input onClick="updateColors()" type="radio" name="startAt" value="F">F</label>
+            <label class="flexCol blkKey" style="align-items: center; padding: 0 4px;"><input onClick="updateColors()" type="radio" name="startAt" value="FS">F#</label>
+            <label class="flexCol whtKey" style="align-items: center; padding: 0 4px;"><input onClick="updateColors()" type="radio" name="startAt" value="G">G</label>
+            <label class="flexCol blkKey" style="align-items: center; padding: 0 4px;"><input onClick="updateColors()" type="radio" name="startAt" value="GS">G#</label>
+            <label class="flexCol whtKey" style="align-items: center; padding: 0 4px;"><input onClick="updateColors()" type="radio" name="startAt" value="A">A</label>
+            <label class="flexCol blkKey" style="align-items: center; padding: 0 4px;"><input onClick="updateColors()" type="radio" name="startAt" value="AS">A#</label>
+            <label class="flexCol whtKey" style="align-items: center; padding: 0 4px;"><input onClick="updateColors()" type="radio" name="startAt" value="B">B</label>
+        </fieldset>
+    </form>
+    <div class="flexRow">
+        <fieldset class="flexRow">
+            <legend>Major Scale</legend>
+            <div class="note note-C"></div>
+            <div class="note note-D"></div>
+            <div class="note note-E"></div>
+            <div class="note note-F"></div>
+            <div class="note note-G"></div>
+            <div class="note note-A"></div>
+            <div class="note note-B"></div>
+            <div class="note note-C"></div>
+        </fieldset>
+        <fieldset class="flexRow">
+            <legend>Minor Scale</legend>
+            <div class="flexRow">
+                <div class="note note-C"></div>
+                <div class="note note-D"></div>
+                <div class="note note-DS"></div>
+                <div class="note note-F"></div>
+                <div class="note note-G"></div>
+                <div class="note note-GS"></div>
+                <div class="note note-AS"></div>
+                <div class="note note-C"></div>
+            </div>
+        </fieldset>
+        <fieldSet class="flexRow">
+            <legend>Evens</legend>
+            <div class="note note-C"></div>
+            <div class="note note-D"></div>
+            <div class="note note-E"></div>
+            <div class="note note-FS"></div>
+            <div class="note note-GS"></div>
+            <div class="note note-AS"></div>
+            <div class="note note-C"></div>
+        </fieldSet>
+        <fieldSet class="flexRow">
+            <legend>Odds</legend>
+            <div class="note note-CS"></div>
+            <div class="note note-DS"></div>
+            <div class="note note-F"></div>
+            <div class="note note-G"></div>
+            <div class="note note-A"></div>
+            <div class="note note-B"></div>
+            <div class="note note-CS"></div>
+        </fieldSet>
+    </div>
+    <div class="flexRow">
+        <fieldset class="flexRow">
+            <legend>Maj</legend>
+            <div class="note note-C"></div>
+            <div class="note note-E"></div>
+            <div class="note note-G"></div>
+        </fieldset>
+        <fieldset class="flexRow">
+            <legend>min</legend>
+            <div class="note note-C"></div>
+            <div class="note note-DS"></div>
+            <div class="note note-G"></div>
+        </fieldset>
+        <fieldset class="flexRow">
+            <legend>Maj7</legend>
+            <div class="note note-C"></div>
+            <div class="note note-E"></div>
+            <div class="note note-G"></div>
+            <div class="note note-AS"></div>
+        </fieldset>
+        <fieldset class="flexRow">
+            <legend>min7</legend>
+            <div class="note note-C"></div>
+            <div class="note note-DS"></div>
+            <div class="note note-G"></div>
+            <div class="note note-AS"></div>
+        </fieldset>
+    </div>
+</div>
+<div id="footer">
+    <span>Note Colors</span>
+    <span style="flex:0%"></span>
+</div>
+</body>
+</html>
