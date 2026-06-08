@@ -19,6 +19,7 @@
 
     --border-color: #555;
     --border-width: 1px;
+    --border-radius: 2px;
 }
 body {
     color-scheme: dark;
@@ -68,11 +69,13 @@ hr {
 
 fieldset {
     border: var(--border-width) solid var(--border-color);
+    border-radius: var(--border-radius);
     display: inline-block;
     vertical-align: top;
+    padding: 8px;
 }
 fieldset legend {
-    padding: 4px 8px;
+    padding: 0 8px;
 }
 
 label {
@@ -82,16 +85,25 @@ label {
 label:hover {
     color: var(--foreground-hover);
 }
+label > input {
+    margin-right: 4px;
+}
 input {
     background: var(--background-color-2);
     border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
     color: var(--foreground-color-1);
 }
 input:focus {
     border-color: var(--foreground-color-1);
+    outline: none;
 }
 input:hover {
     border-color: var(--foreground-color-1);
+}
+
+input[type=number] {
+    width: 5em;
 }
 
 button,
@@ -101,7 +113,7 @@ input[type=button] {
     padding: 2px 8px;
     border: 1px outset var(--button-color);
     color: var(--button-foreground);
-    border-radius: 2px;
+    border-radius: var(--border-radius);
 }
 button:focus,
 input[type=button]:focus {
@@ -131,7 +143,8 @@ input[type=button]:disabled {
     background: var(--button-color-disabled);
 }
 
-input[type=radio] {
+input[type=radio],
+input[type=checkbox] {
     cursor: pointer;
 }
 .flexRow {
